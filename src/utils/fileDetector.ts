@@ -66,7 +66,7 @@ export function generateContextualHint(query: string): string {
             hints.push(`${word} is a non-empty directory (use 'rm -rf')`);
           }
         } else if (fileInfo.isFile) {
-          hints.push(`${word} is a file (use 'rm')`);
+          hints.push(`${word} is a file (use 'rm -rf')`);
         }
       } else {
         hints.push(`${word} does not exist`);

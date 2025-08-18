@@ -4,6 +4,13 @@
 
 A command-line assistant based on custom AI models that converts natural language into executable commands.
 
+# DEMO
+
+<video controls width="640" height="360">
+  <source src="./example.mp4" type="video/mp4">
+  您的浏览器不支持 video 标签。
+</video>
+
 ## Repository
 
 🔗 GitHub: [https://github.com/zhump/ask2-ai-cli](https://github.com/zhump/ask2-ai-cli)
