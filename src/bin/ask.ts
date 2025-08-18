@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { program } from 'commander';
+import fs from 'fs';
 import { askCommand } from '../commands/ask.js';
 import { configCommand } from '../commands/config.js';
 import { testCommand } from '../commands/test.js';
@@ -8,8 +9,19 @@ import { logCommand } from '../commands/log.js';
 
 program
   .name('ask')
-  .description('Convert natural language to executable commands')
-  .version('1.0.2');
+  .description('Convert natural language to executable commands');
+
+// Read version from package.json so `ask -V` reflects package.json
+let pkgVersion = '0.0.0';
+try {
+  const pkgText = fs.readFileSync(new URL('../../package.json', import.meta.url), 'utf8');
+  const pkg = JSON.parse(pkgText);
+  if (pkg && pkg.version) pkgVersion = pkg.version;
+} catch (e) {
+  // fallback kept as default
+}
+
+program.version(pkgVersion);
 
 program
   .argument('[query...]', 'Natural language query to convert to command')

@@ -1,6 +1,6 @@
 {
   "name": "ask2-ai-cli",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Convert natural language to executable commands",
   "type": "module",
   "main": "dist/index.js",
