@@ -1,0 +1,59 @@
+import config from '../config/index.js';
+import type { ZhipuMessage, ZhipuResponse } from '../types/index.js';
+
+class AIService {
+    async callZhipuAPI(messages: ZhipuMessage[], model?: string): Promise<ZhipuResponse> {
+        const configData = await config.load();
+
+        if (!configData.apiKey) {
+            throw new Error('API key not configured. Run "ask config" to set up your API key.');
+        }
+
+        const url = configData.apiUrl;
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${configData.apiKey}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                model: model || configData.model,
+                messages: messages,
+                thinking:{
+                    "type": "disabled",  
+                },
+                temperature: configData.temperature
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`API调用失败: ${response.status} ${response.statusText}`);
+        }
+
+        return await response.json();
+    }
+
+    async generateCommand(prompt: string): Promise<string> {
+        try {
+            const messages: ZhipuMessage[] = [
+                { role: 'user', content: prompt }
+            ];
+
+            const result = await this.callZhipuAPI(messages);
+
+            if (!result.choices || result.choices.length === 0) {
+                throw new Error('AI 返回了空响应');
+            }
+
+            return result.choices[0].message.content.trim();
+        } catch (error) {
+            if (error instanceof Error) {
+                throw error;
+            } else {
+                throw new Error(`请求错误: ${error}`);
+            }
+        }
+    }
+}
+
+export default new AIService();
