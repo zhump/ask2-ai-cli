@@ -5,7 +5,7 @@
 A command-line assistant based on custom AI models that converts natural language into executable commands.
 
 # DEMO
-![Demo GIF](./example.gif)
+![Demo GIF](https://636c-cloudbase-9g52ks1b1d834b1a-1364764776.tcb.qcloud.la/case.gif)
 
 ## Repository
 

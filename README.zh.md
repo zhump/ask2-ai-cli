@@ -7,7 +7,7 @@
 🔗 GitHub: [https://github.com/zhump/ask2-ai-cli](https://github.com/zhump/ask2-ai-cli)
 
 # DEMO
-![Demo GIF](./example.gif)
+![Demo GIF](https://636c-cloudbase-9g52ks1b1d834b1a-1364764776.tcb.qcloud.la/case.gif)
 
 ## 功能特性
 
