@@ -4,10 +4,16 @@ import { getSystemInfo, buildPrompt } from '../utils/system.js';
 import { askUserChoice } from '../utils/input.js';
 import { executeCommand } from '../utils/executor.js';
 import { DebugTimer, type DebugOptions } from '../utils/debug.js';
+import { isDangerousCommand, requiresPrivileges, isCurrentUserPrivileged, confirmDangerousOperation, suggestPrivilegeEscalation } from '../utils/safety.js';
+import { explainCommand, displayCommandExplanation } from '../utils/explainer.js';
 import logger from '../utils/logger.js';
 import aiService from '../services/ai.js';
 
-export async function askCommand(query: string, options: DebugOptions = {}): Promise<void> {
+export interface AskOptions extends DebugOptions {
+  explain?: boolean;
+}
+
+export async function askCommand(query: string, options: AskOptions = {}): Promise<void> {
   const debugTimer = new DebugTimer(options.debug);
   let currentCommand = '';
   let attempts = 0;
@@ -47,6 +53,27 @@ export async function askCommand(query: string, options: DebugOptions = {}): Pro
       debugTimer.startStage('Display result');
       console.log(chalk.green('\nSuggested command:'));
       console.log(chalk.cyan(currentCommand));
+      
+      // Check for privilege requirements
+      if (requiresPrivileges(currentCommand) && !isCurrentUserPrivileged()) {
+        console.log(chalk.yellow('\n⚠️  This command may require elevated privileges.'));
+        console.log(chalk.gray('Consider using:'), chalk.cyan(suggestPrivilegeEscalation(currentCommand, systemInfo)));
+      }
+      
+      // Show explanation if requested
+      if (options.explain) {
+        debugTimer.startStage('Generate explanation');
+        const spinner2 = ora('Generating command explanation...').start();
+        try {
+          const explanation = await explainCommand(currentCommand, systemInfo);
+          spinner2.stop();
+          displayCommandExplanation(currentCommand, explanation);
+        } catch (error) {
+          spinner2.stop();
+          console.log(chalk.red('\nFailed to generate explanation:'), error instanceof Error ? error.message : 'Unknown error');
+        }
+      }
+      
       console.log(chalk.yellow('\n⚠️  Please review the command carefully before execution!'));
 
       // Ask user choice
@@ -56,6 +83,30 @@ export async function askCommand(query: string, options: DebugOptions = {}): Pro
       switch (choice.action) {
         case 'execute':
           try {
+            // Check for dangerous operations and require double confirmation
+            if (isDangerousCommand(currentCommand)) {
+              const confirmed = await confirmDangerousOperation(currentCommand);
+              if (!confirmed) {
+                console.log(chalk.green('\n✅ Execution cancelled for safety.'));
+                
+                // Log cancelled dangerous command
+                await logger.addLog({
+                  timestamp: new Date().toISOString(),
+                  query,
+                  command: currentCommand,
+                  executed: false,
+                  systemInfo: {
+                    os: systemInfo.systemName,
+                    arch: systemInfo.arch,
+                    shell: systemInfo.shell
+                  }
+                });
+                
+                debugTimer.showSummary();
+                return;
+              }
+            }
+            
             debugTimer.startStage('Execute command');
             await executeCommand(currentCommand);
 
@@ -116,6 +167,81 @@ export async function askCommand(query: string, options: DebugOptions = {}): Pro
         case 'change':
           console.log(chalk.blue('\nGenerating new solution...'));
           continue; // Continue loop, regenerate
+          
+        case 'explain':
+          debugTimer.startStage('Generate explanation');
+          const spinner3 = ora('Generating command explanation...').start();
+          try {
+            const explanation = await explainCommand(currentCommand, systemInfo);
+            spinner3.stop();
+            displayCommandExplanation(currentCommand, explanation);
+            
+            // After showing explanation, ask user choice again
+            const newChoice = await askUserChoice();
+            if (newChoice.action === 'execute') {
+              // Check for dangerous operations again
+              if (isDangerousCommand(currentCommand)) {
+                const confirmed = await confirmDangerousOperation(currentCommand);
+                if (!confirmed) {
+                  console.log(chalk.green('\n✅ Execution cancelled for safety.'));
+                  await logger.addLog({
+                    timestamp: new Date().toISOString(),
+                    query,
+                    command: currentCommand,
+                    executed: false,
+                    systemInfo: {
+                      os: systemInfo.systemName,
+                      arch: systemInfo.arch,
+                      shell: systemInfo.shell
+                    }
+                  });
+                  debugTimer.showSummary();
+                  return;
+                }
+              }
+              
+              await executeCommand(currentCommand);
+              await logger.addLog({
+                timestamp: new Date().toISOString(),
+                query,
+                command: currentCommand,
+                executed: true,
+                systemInfo: {
+                  os: systemInfo.systemName,
+                  arch: systemInfo.arch,
+                  shell: systemInfo.shell
+                }
+              });
+              debugTimer.showSummary();
+              return;
+            } else if (newChoice.action === 'exit') {
+              console.log(chalk.gray('\nExecution cancelled'));
+              await logger.addLog({
+                timestamp: new Date().toISOString(),
+                query,
+                command: currentCommand,
+                executed: false,
+                systemInfo: {
+                  os: systemInfo.systemName,
+                  arch: systemInfo.arch,
+                  shell: systemInfo.shell
+                }
+              });
+              debugTimer.showSummary();
+              return;
+            } else if (newChoice.action === 'change') {
+              console.log(chalk.blue('\nGenerating new solution...'));
+              continue;
+            }
+          } catch (error) {
+            spinner3.stop();
+            console.log(chalk.red('\nFailed to generate explanation:'), error instanceof Error ? error.message : 'Unknown error');
+            // Continue to ask user choice again
+            const newChoice = await askUserChoice();
+            // Handle the choice similar to above...
+            continue;
+          }
+          break;
       }
 
     } catch (error) {

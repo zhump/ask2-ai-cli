@@ -18,6 +18,9 @@ A command-line assistant based on custom AI models that converts natural languag
 - 🔍 Debug mode with detailed timing analysis
 - 📦 Smart package manager detection
 - 📋 Command history and logging
+- 🛡️ Advanced safety checks for dangerous operations
+- 📚 Command explanation and educational features
+- 🔐 Privilege escalation detection and suggestions
 
 ## Installation
 
@@ -45,6 +48,10 @@ ask "list all files"
 # Enable debug mode
 ask --debug "find all typescript files"
 ask -d "check disk usage"
+
+# Get command explanation
+ask --explain "find all typescript files"
+ask -e "delete old log files"
 
 # More examples
 ask "show running processes"
@@ -102,6 +109,16 @@ After AI generates a command, you can choose:
 - **Enter** - Execute the suggested command immediately
 - **N** - Cancel execution and exit
 - **C** - Let AI regenerate a different solution
+- **E** - Get detailed explanation of the command
+
+### Safety Features
+
+The tool includes advanced safety mechanisms:
+
+- **🛡️ Dangerous Operation Detection**: Automatically detects potentially harmful commands (rm -rf, dd, etc.)
+- **🔒 Double Confirmation**: Requires explicit confirmation for dangerous operations
+- **👑 Privilege Detection**: Warns when commands need elevated privileges and suggests proper escalation
+- **📚 Command Education**: Provides detailed explanations to help users understand what commands do
 
 ### Usage Example
 
@@ -113,12 +130,16 @@ df -h
 
 ⚠️  Please review the command carefully before execution!
 
+⚠️  This command may require elevated privileges.
+Consider using: sudo df -h
+
 Choose action:
   Enter - Execute command
   N - Exit
   C - Change answer
+  E - Explain command
 
-Please choose (Enter/N/C): [Enter]
+Please choose (Enter/N/C/E): [Enter]
 
 Executing command: df -h
 ──────────────────────────────────────────────────
@@ -135,16 +156,19 @@ Filesystem      Size   Used  Avail Capacity iused      ifree %iused  Mounted on
 Convert natural language to executable commands.
 
 **Options:**
-- `-d, --debug` - Enable debug mode
+- `-d, --debug` - Enable debug mode with detailed timing and prompt info
+- `-e, --explain` - Provide detailed explanation of the generated command
 
 **Examples:**
 ```bash
 ask "find all .js files"
 ask --debug "kill process on port 3000"
+ask --explain "delete old log files"
+ask -de "install nodejs"  # Both debug and explain
 ```
 
 ### `ask config`
-Open configuration file to set up API key and other settings.
+Display current configuration and file path. Shows API settings and configuration location.
 
 ### `ask test`
 Test AI API connectivity and configuration.
@@ -186,10 +210,13 @@ The tool automatically detects and adapts to your system:
 ⚠️ Always review AI-suggested commands before execution to ensure they are safe and appropriate.
 
 The tool includes built-in safety features:
-- Warnings for potentially dangerous operations
-- Interactive confirmation before execution
-- Debug mode for transparency
-- Command history for accountability
+- **Dangerous Command Detection**: Identifies potentially harmful operations
+- **Double Confirmation**: Requires "YES I AM SURE" for dangerous commands
+- **Privilege Escalation Warnings**: Suggests sudo/admin when needed
+- **Interactive Confirmation**: Always asks before execution
+- **Command Explanations**: Educational features to understand commands
+- **Debug Mode Transparency**: Full visibility into AI decision-making
+- **Command History**: Complete audit trail for accountability
 
 ## License
 

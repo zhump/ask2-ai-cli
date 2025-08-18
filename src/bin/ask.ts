@@ -14,12 +14,16 @@ program
 program
   .argument('[query...]', 'Natural language query to convert to command')
   .option('-d, --debug', 'Enable debug mode with detailed timing and prompt info')
+  .option('-e, --explain', 'Provide detailed explanation of the generated command')
   .action(async (query: string[], options) => {
     if (query.length === 0) {
       program.help();
       return;
     }
-    await askCommand(query.join(' '), { debug: options.debug });
+    await askCommand(query.join(' '), { 
+      debug: options.debug, 
+      explain: options.explain 
+    });
   });
 
 program
