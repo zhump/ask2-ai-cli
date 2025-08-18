@@ -3,10 +3,16 @@ import { createReadlineInterface } from './input.js';
 
 // Dangerous command patterns that require double confirmation
 const DANGEROUS_PATTERNS = [
-  /rm\s+(-[rf]*\s+)?\//, // rm with root path
-  /rm\s+(-[rf]*\s+)?\*/, // rm with wildcard
-  /rm\s+-rf/, // rm -rf
+  // rm commands - various dangerous patterns
+  /^rm\s+/, // Any rm command (all deletions should be confirmed)
   /sudo\s+rm/, // sudo rm
+  
+  // Other dangerous file operations
+  /find\s+.*-delete/, // find with -delete
+  /find\s+.*-exec\s+rm/, // find with rm execution
+  /xargs\s+rm/, // xargs rm combination
+  
+  // System-level dangerous operations
   /dd\s+if=/, // dd command
   /mkfs/, // format filesystem
   /fdisk/, // disk partitioning
@@ -14,14 +20,31 @@ const DANGEROUS_PATTERNS = [
   /wipefs/, // wipe filesystem
   /shred/, // secure delete
   /:\(\)\{\s*:\|\:&\s*\}/, // fork bomb
+  
+  // Dangerous redirections to system locations
   />\s*\/dev\/sd[a-z]/, // write to disk device
-  /chmod\s+777/, // dangerous permissions
-  /chown\s+.*\//, // change ownership of root paths
-  /truncate.*\//, // truncate system files
   />\s*\/etc\//, // overwrite system config
   />\s*\/boot\//, // overwrite boot files
   />\s*\/usr\//, // overwrite system files
-  />\s*\/var\//, // overwrite system files
+  />\s*\/var\/log\//, // overwrite system logs
+  />\s*\/proc\//, // write to proc filesystem
+  />\s*\/sys\//, // write to sys filesystem
+  
+  // Dangerous permissions
+  /chmod\s+777/, // dangerous permissions
+  /chmod\s+-R\s+777/, // recursive dangerous permissions
+  /chown\s+root/, // change ownership to root
+  /chown\s+.*:.*\//, // change ownership of system paths
+  
+  // File truncation of system files
+  /truncate.*\/etc\//, // truncate system config
+  /truncate.*\/var\//, // truncate system files
+  /truncate.*\/usr\//, // truncate system files
+  
+  // Mass file operations
+  /rm\s+.*\*/, // rm with wildcards
+  /rm\s+-rf/, // recursive force delete
+  /rm\s+-r/, // recursive delete
 ];
 
 // Commands that typically require elevated privileges
