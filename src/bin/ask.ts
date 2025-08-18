@@ -11,12 +11,13 @@ program
 
 program
   .argument('[query...]', '要转换为命令的自然语言查询')
-  .action(async (query: string[]) => {
+  .option('-d, --debug', '启用调试模式，显示提示词和耗时信息')
+  .action(async (query: string[], options) => {
     if (query.length === 0) {
       program.help();
       return;
     }
-    await askCommand(query.join(' '));
+    await askCommand(query.join(' '), { debug: options.debug });
   });
 
 program

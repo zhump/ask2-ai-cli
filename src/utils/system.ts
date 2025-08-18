@@ -30,16 +30,16 @@ function detectProjectType(): string {
 // 检测实际安装的包管理器
 function detectPackageManager(systemName: string, platform: NodeJS.Platform): string[] {
     const packageManagers: string[] = [];
-    
+
     // 定义各平台可能的包管理器
     const candidates = {
         'macOS': ['brew', 'port', 'fink'],
         'Windows': ['winget', 'choco', 'scoop'],
         'Linux': ['apt', 'yum', 'dnf', 'pacman', 'zypper', 'apk', 'emerge', 'xbps-install']
     };
-    
+
     const platformCandidates = candidates[systemName as keyof typeof candidates] || [];
-    
+
     // 检测每个候选包管理器是否实际安装
     for (const pm of platformCandidates) {
         try {
@@ -49,7 +49,7 @@ function detectPackageManager(systemName: string, platform: NodeJS.Platform): st
             // 包管理器不存在，继续检测下一个
         }
     }
-    
+
     // Windows 特殊处理 - 检测 PowerShell 模块
     if (platform === 'win32') {
         try {
@@ -61,7 +61,7 @@ function detectPackageManager(systemName: string, platform: NodeJS.Platform): st
             // winget 不可用
         }
     }
-    
+
     return packageManagers;
 }
 
@@ -118,7 +118,7 @@ export function getSystemInfo(): SystemInfo {
 // 简洁优雅的 buildPrompt 方法
 export function buildPrompt(query: string, systemInfo: SystemInfo): string {
     // 构建包管理器信息
-    const packageManagerInfo = systemInfo.packageManagers && systemInfo.packageManagers.length > 0 
+    const packageManagerInfo = systemInfo.packageManagers && systemInfo.packageManagers.length > 0
         ? `可用包管理器: ${systemInfo.packageManagers.join(', ')} (优先: ${systemInfo.packageManager})`
         : null;
 
