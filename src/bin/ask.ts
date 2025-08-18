@@ -3,6 +3,7 @@
 import { program } from 'commander';
 import { askCommand } from '../commands/ask.js';
 import { configCommand } from '../commands/config.js';
+import { testCommand } from '../commands/test.js';
 
 program
   .name('ask')
@@ -24,5 +25,13 @@ program
   .command('config')
   .description('打开配置文件')
   .action(configCommand);
+
+program
+  .command('test')
+  .description('测试 AI 接口连通性')
+  .option('-d, --debug', '启用调试模式')
+  .action(async (options) => {
+    await testCommand({ debug: options.debug });
+  });
 
 program.parse();

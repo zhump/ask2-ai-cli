@@ -5,7 +5,7 @@
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "ask": "./dist/bin/ask.js"
+    "ask": "dist/bin/ask.js"
   },
   "scripts": {
     "build": "tsc",
