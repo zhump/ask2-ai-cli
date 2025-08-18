@@ -1,6 +1,6 @@
 # Ask CLI
 
-一个基于 ZhipuAI 的命令行助手，可以将自然语言转换为可执行的命令。
+一个基于 自定义AI模型 的命令行助手，可以将自然语言转换为可执行的命令。
 
 ## 仓库地址
 
@@ -29,7 +29,7 @@ npm install ask2-ai-cli -g
  ask config
 ```
 
-或者手动编辑配置文件，添加你的 ZhipuAI API key。
+或者手动编辑配置文件，添加你的 AI API key。
 
 ## 使用方法
 

@@ -6,11 +6,14 @@ export interface ConfigData {
 }
 
 export interface SystemInfo {
-  platform: string;
+  platform: NodeJS.Platform;
   systemName: string;
   release: string;
   arch: string;
   shell: string;
+  projectType?: string;
+  isWSL?: boolean;
+  packageManager?: string;
 }
 
 export interface ZhipuMessage {
