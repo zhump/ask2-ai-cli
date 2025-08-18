@@ -1,4 +1,4 @@
-**English** | [中文文档](README.zh.md)
+**English** | [中文文档](./README.md)
 
 # Ask CLI
 

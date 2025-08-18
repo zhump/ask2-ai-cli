@@ -2,6 +2,7 @@ import os from 'os';
 import path from 'path';
 import fs from 'fs';
 import { execSync } from 'child_process';
+import { generateContextualHint } from './fileDetector.js';
 import type { SystemInfo } from '../types/index.js';
 
 // 简洁的项目类型检测
@@ -117,40 +118,55 @@ export function getSystemInfo(): SystemInfo {
 
 // 简洁优雅的 buildPrompt 方法
 export function buildPrompt(query: string, systemInfo: SystemInfo): string {
-    // 构建包管理器信息
+    // Build package manager information
     const packageManagerInfo = systemInfo.packageManagers && systemInfo.packageManagers.length > 0
-        ? `可用包管理器: ${systemInfo.packageManagers.join(', ')} (优先: ${systemInfo.packageManager})`
+        ? `Available package managers: ${systemInfo.packageManagers.join(', ')} (preferred: ${systemInfo.packageManager})`
         : null;
 
-    // 构建系统上下文
+    // Build system context
     const systemContext = [
-        `操作系统: ${systemInfo.systemName} (${systemInfo.platform})`,
-        `架构: ${systemInfo.arch}`,
+        `Operating System: ${systemInfo.systemName} (${systemInfo.platform})`,
+        `Architecture: ${systemInfo.arch}`,
         `Shell: ${systemInfo.shell}`,
         packageManagerInfo,
-        systemInfo.projectType ? `项目类型: ${systemInfo.projectType}` : null,
-        systemInfo.isWSL ? '环境: WSL' : null
+        systemInfo.projectType ? `Project Type: ${systemInfo.projectType}` : null,
+        systemInfo.isWSL ? 'Environment: WSL' : null
     ].filter(Boolean).join('\n- ');
 
-    // 安全提示
+    // Safety note for dangerous operations
     const safetyNote = query.toLowerCase().includes('删除') ||
+        query.toLowerCase().includes('delete') ||
+        query.toLowerCase().includes('remove') ||
         query.toLowerCase().includes('rm ') ||
         query.toLowerCase().includes('kill') ?
-        '\n⚠️ 注意：请谨慎执行可能的危险操作' : '';
+        '\n⚠️ Note: Exercise caution with potentially dangerous operations' : '';
 
-    return `你是一个命令行助手。将自然语言转换为可执行的命令。
+    // Get contextual file information
+    const fileContext = generateContextualHint(query);
 
-系统信息:
+    return `You are a command-line assistant. Convert natural language requests into executable commands for the specified system.
+
+System Information:
 - ${systemContext}
 
-用户请求: "${query}"
+User Request: "${query}"
 
-要求:
-1. 只输出一个可直接执行的命令，无需解释
-2. 命令必须适配 ${systemInfo.systemName} 系统
-3. 优先使用安全、常用的选项
-4. 使用 ${systemInfo.shell} shell 语法
-5. 如需包管理器，优先使用 ${systemInfo.packageManager || '系统默认'}${safetyNote}
+Requirements:
+1. Output ONLY one directly executable command, no explanations
+2. Command must be compatible with ${systemInfo.systemName} system
+3. Use safe, commonly-used options and parameters
+4. Use ${systemInfo.shell} shell syntax
+5. For package management, prefer ${systemInfo.packageManager || 'system default'}
+6. For file/directory operations:
+   - Use appropriate flags (e.g., -r for directories, -f for force)
+   - Consider whether target is file or directory
+   - Use safe deletion methods when possible
 
-命令:`;
+Important Notes:
+- For deleting directories: use 'rm -rf' or 'rmdir' as appropriate
+- For deleting files: use 'rm' with appropriate flags
+- For system operations: include necessary privileges (sudo) when required
+- Always generate working, tested command patterns${fileContext}${safetyNote}
+
+Command:`;
 }

@@ -6,12 +6,12 @@ const DANGEROUS_PATTERNS = [
   // rm commands - various dangerous patterns
   /^rm\s+/, // Any rm command (all deletions should be confirmed)
   /sudo\s+rm/, // sudo rm
-  
+
   // Other dangerous file operations
   /find\s+.*-delete/, // find with -delete
   /find\s+.*-exec\s+rm/, // find with rm execution
   /xargs\s+rm/, // xargs rm combination
-  
+
   // System-level dangerous operations
   /dd\s+if=/, // dd command
   /mkfs/, // format filesystem
@@ -20,7 +20,7 @@ const DANGEROUS_PATTERNS = [
   /wipefs/, // wipe filesystem
   /shred/, // secure delete
   /:\(\)\{\s*:\|\:&\s*\}/, // fork bomb
-  
+
   // Dangerous redirections to system locations
   />\s*\/dev\/sd[a-z]/, // write to disk device
   />\s*\/etc\//, // overwrite system config
@@ -29,18 +29,18 @@ const DANGEROUS_PATTERNS = [
   />\s*\/var\/log\//, // overwrite system logs
   />\s*\/proc\//, // write to proc filesystem
   />\s*\/sys\//, // write to sys filesystem
-  
+
   // Dangerous permissions
   /chmod\s+777/, // dangerous permissions
   /chmod\s+-R\s+777/, // recursive dangerous permissions
   /chown\s+root/, // change ownership to root
   /chown\s+.*:.*\//, // change ownership of system paths
-  
+
   // File truncation of system files
   /truncate.*\/etc\//, // truncate system config
   /truncate.*\/var\//, // truncate system files
   /truncate.*\/usr\//, // truncate system files
-  
+
   // Mass file operations
   /rm\s+.*\*/, // rm with wildcards
   /rm\s+-rf/, // recursive force delete
@@ -80,7 +80,7 @@ export function requiresPrivileges(command: string): boolean {
   if (command.trim().startsWith('sudo ')) {
     return false;
   }
-  
+
   return PRIVILEGE_PATTERNS.some(pattern => pattern.test(command));
 }
 
@@ -89,14 +89,14 @@ export function isCurrentUserPrivileged(): boolean {
   if (process.getuid && process.getuid() === 0) {
     return true;
   }
-  
+
   // On Windows, check if running as administrator (simplified check)
   if (process.platform === 'win32') {
     // This is a simplified check - in practice, you'd need more sophisticated detection
-    return process.env.USERNAME === 'Administrator' || 
-           process.env.USERDOMAIN === 'NT AUTHORITY';
+    return process.env.USERNAME === 'Administrator' ||
+      process.env.USERDOMAIN === 'NT AUTHORITY';
   }
-  
+
   return false;
 }
 
@@ -107,20 +107,20 @@ export async function confirmDangerousOperation(command: string): Promise<boolea
   console.log();
   console.log(chalk.red('Are you absolutely sure you want to execute this command?'));
   console.log(chalk.gray('This is your final warning before execution.'));
-  
+
   return new Promise((resolve) => {
     const rl = createReadlineInterface();
-    
+
     rl.question(chalk.red('\nType "YES I AM SURE" to confirm (anything else will cancel): '), (answer) => {
       rl.close();
-      
+
       const confirmed = answer.trim() === 'YES I AM SURE';
       if (confirmed) {
         console.log(chalk.yellow('\n⚠️  Proceeding with dangerous operation...'));
       } else {
         console.log(chalk.green('\n✅ Operation cancelled for safety.'));
       }
-      
+
       resolve(confirmed);
     });
   });
