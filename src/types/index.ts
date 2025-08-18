@@ -14,6 +14,7 @@ export interface SystemInfo {
   projectType?: string;
   isWSL?: boolean;
   packageManager?: string;
+  packageManagers?: string[];
 }
 
 export interface ZhipuMessage {
