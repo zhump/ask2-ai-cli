@@ -111,12 +111,17 @@ export async function confirmDangerousOperation(command: string): Promise<boolea
   return new Promise((resolve) => {
     const rl = createReadlineInterface();
 
-    rl.question(chalk.red('\nType "YES I AM SURE" to confirm (anything else will cancel): '), (answer) => {
+    // Allow pressing Enter to confirm (empty input) or typing the explicit phrase
+    rl.question(chalk.red('\nPress Enter to confirm explicitly (anything else will cancel): '), (answer) => {
       rl.close();
 
-      const confirmed = answer.trim() === 'YES I AM SURE';
+      const trimmed = answer.trim();
+      const confirmed = trimmed === '';
+
       if (confirmed) {
-        console.log(chalk.yellow('\n⚠️  Proceeding with dangerous operation...'));
+        if (trimmed === '') {
+          console.log(chalk.yellow('\n⚠️  Proceeding with dangerous operation (confirmed by Enter)...'));
+        }
       } else {
         console.log(chalk.green('\n✅ Operation cancelled for safety.'));
       }
