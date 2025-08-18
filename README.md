@@ -2,9 +2,13 @@
 
 一个基于 ZhipuAI 的命令行助手，可以将自然语言转换为可执行的命令。
 
+## 仓库地址
+
+🔗 GitHub: [https://github.com/zhump/ask2-ai-cli](https://github.com/zhump/ask2-ai-cli)
+
 ## 功能特性
 
-- 🤖 使用 ZhipuAI GLM-4.5 模型
+- 🤖 使用自定义AI模型
 - 🖥️ 支持 macOS、Linux 和 Windows
 - 🔧 智能识别系统环境
 - ⚡ TypeScript 编写，类型安全
@@ -14,10 +18,7 @@
 
 ```bash
 # 安装依赖
-npm install
-
-# 编译 TypeScript
-npm run build
+npm install ask2-ai-cli -g
 ```
 
 ## 配置
@@ -25,7 +26,7 @@ npm run build
 首次使用需要配置 API key：
 
 ```bash
-node dist/bin/ask.js config
+ ask config
 ```
 
 或者手动编辑配置文件，添加你的 ZhipuAI API key。
@@ -34,12 +35,12 @@ node dist/bin/ask.js config
 
 ```bash
 # 基本用法
-node dist/bin/ask.js "list all files"
+ ask "list all files"
 
 # 更多示例
-node dist/bin/ask.js "find all typescript files"
-node dist/bin/ask.js "check disk usage"
-node dist/bin/ask.js "show running processes"
+ ask "find all typescript files"
+ ask "check disk usage"
+ ask "show running processes"
 ```
 
 ### 交互选项
@@ -53,7 +54,7 @@ node dist/bin/ask.js "show running processes"
 ### 使用示例
 
 ```bash
-$ node dist/bin/ask.js "show disk usage"
+$ ask "show disk usage"
 
 建议的命令:
 df -h
@@ -74,28 +75,6 @@ Filesystem      Size   Used  Avail Capacity iused      ifree %iused  Mounted on
 ...
 ──────────────────────────────────────────────────
 ✅ 命令执行完成
-```
-
-## 开发
-
-```bash
-# 监听模式编译
-npm run dev
-
-# 构建
-npm run build
-```
-
-## 项目结构
-
-```
-src/
-├── bin/           # CLI 入口文件
-├── commands/      # 命令处理
-├── config/        # 配置管理
-├── services/      # AI 服务
-├── types/         # TypeScript 类型定义
-└── utils/         # 工具函数
 ```
 
 ## 注意事项
