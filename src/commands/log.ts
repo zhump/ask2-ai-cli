@@ -23,7 +23,7 @@ export async function logCommand(options: LogOptions = {}): Promise<void> {
     }
 
     const limit = options.limit || logs.length;
-    const displayLogs = logs.slice(-limit);
+    const displayLogs = logs.slice(-limit).reverse(); // Reverse to show newest first
 
     console.log(chalk.blue(`📋 Command History (showing last ${displayLogs.length} entries)`));
     console.log(chalk.gray('─'.repeat(80)));

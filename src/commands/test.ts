@@ -7,33 +7,33 @@ import aiService from '../services/ai.js';
 export async function testCommand(options: DebugOptions = {}): Promise<void> {
     const debugTimer = new DebugTimer(options.debug);
 
-    console.log(chalk.blue('🔧 测试 AI 接口连通性...\n'));
+    console.log(chalk.blue('🔧 Testing AI API connectivity...\n'));
 
-    debugTimer.startStage('初始化测试');
+    debugTimer.startStage('Test initialization');
 
-    const spinner = ora('正在测试 AI 连接...').start();
+    const spinner = ora('Testing AI connection...').start();
 
     try {
-        // 获取系统信息
-        debugTimer.startStage('获取系统信息');
+        // Get system information
+        debugTimer.startStage('Get system info');
         const systemInfo = getSystemInfo();
 
-        // 构建简单的测试提示
-        debugTimer.startStage('构建测试提示');
-        const testPrompt = `你是一个命令行助手。请回复"连接成功"来确认接口正常工作。
+        // Build simple test prompt
+        debugTimer.startStage('Build test prompt');
+        const testPrompt = `You are a command-line assistant. Please reply "Connection successful" to confirm the interface is working properly.
 
-系统信息:
-- 操作系统: ${systemInfo.systemName}
-- 架构: ${systemInfo.arch}
+System information:
+- Operating System: ${systemInfo.systemName}
+- Architecture: ${systemInfo.arch}
 
-测试请求: 请确认连接状态
+Test request: Please confirm connection status
 
-只需回复"连接成功"即可:`;
+Just reply "Connection successful":`;
 
         debugTimer.showPrompt(testPrompt);
 
-        // 测试 AI 连接
-        debugTimer.startStage('测试 AI 连接');
+        // Test AI connection
+        debugTimer.startStage('Test AI connection');
         const startTime = Date.now();
         const response = await aiService.generateCommand(testPrompt);
         const responseTime = Date.now() - startTime;
@@ -41,30 +41,30 @@ export async function testCommand(options: DebugOptions = {}): Promise<void> {
         debugTimer.showResponse(response);
         spinner.stop();
 
-        // 检查响应
-        debugTimer.startStage('验证响应');
-        const isValidResponse = response.toLowerCase().includes('连接成功') ||
+        // Check response
+        debugTimer.startStage('Validate response');
+        const isValidResponse = response.toLowerCase().includes('connection successful') ||
             response.toLowerCase().includes('success') ||
             response.toLowerCase().includes('connected');
 
         if (isValidResponse) {
-            console.log(chalk.green('✅ AI 接口连接成功!'));
-            console.log(chalk.gray(`   响应时间: ${responseTime}ms`));
-            console.log(chalk.gray(`   AI 响应: ${response.trim()}`));
+            console.log(chalk.green('✅ AI API connection successful!'));
+            console.log(chalk.gray(`   Response time: ${responseTime}ms`));
+            console.log(chalk.gray(`   AI response: ${response.trim()}`));
         } else {
-            console.log(chalk.yellow('⚠️  AI 接口已连接，但响应异常'));
-            console.log(chalk.gray(`   响应时间: ${responseTime}ms`));
-            console.log(chalk.gray(`   AI 响应: ${response.trim()}`));
-            console.log(chalk.yellow('   建议检查 AI 模型配置'));
+            console.log(chalk.yellow('⚠️  AI API connected, but response is abnormal'));
+            console.log(chalk.gray(`   Response time: ${responseTime}ms`));
+            console.log(chalk.gray(`   AI response: ${response.trim()}`));
+            console.log(chalk.yellow('   Suggest checking AI model configuration'));
         }
 
-        // 显示配置信息
-        console.log(chalk.blue('\n📋 当前配置信息:'));
+        // Show configuration information
+        console.log(chalk.blue('\n📋 Current configuration:'));
         const config = (await import('../config/index.js')).default;
         const configData = await config.load();
         console.log(chalk.gray(`   API URL: ${configData.apiUrl}`));
-        console.log(chalk.gray(`   模型: ${configData.model}`));
-        console.log(chalk.gray(`   温度: ${configData.temperature}`));
+        console.log(chalk.gray(`   Model: ${configData.model}`));
+        console.log(chalk.gray(`   Temperature: ${configData.temperature}`));
 
         debugTimer.showSummary();
 
@@ -72,21 +72,21 @@ export async function testCommand(options: DebugOptions = {}): Promise<void> {
         spinner.stop();
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
 
-        console.log(chalk.red('❌ AI 接口连接失败!'));
-        console.log(chalk.red(`   错误信息: ${errorMessage}`));
+        console.log(chalk.red('❌ AI API connection failed!'));
+        console.log(chalk.red(`   Error message: ${errorMessage}`));
 
         if (errorMessage.includes('API key not configured')) {
-            console.log(chalk.yellow('\n💡 解决方案:'));
-            console.log(chalk.cyan('   ask config  # 配置 API key'));
+            console.log(chalk.yellow('\n💡 Solution:'));
+            console.log(chalk.cyan('   ask config  # Configure API key'));
         } else if (errorMessage.includes('fetch')) {
-            console.log(chalk.yellow('\n💡 可能的原因:'));
-            console.log(chalk.gray('   - 网络连接问题'));
-            console.log(chalk.gray('   - API URL 配置错误'));
-            console.log(chalk.gray('   - 服务器暂时不可用'));
+            console.log(chalk.yellow('\n💡 Possible causes:'));
+            console.log(chalk.gray('   - Network connection issues'));
+            console.log(chalk.gray('   - Incorrect API URL configuration'));
+            console.log(chalk.gray('   - Server temporarily unavailable'));
         } else if (errorMessage.includes('401') || errorMessage.includes('403')) {
-            console.log(chalk.yellow('\n💡 可能的原因:'));
-            console.log(chalk.gray('   - API key 无效或已过期'));
-            console.log(chalk.gray('   - API key 权限不足'));
+            console.log(chalk.yellow('\n💡 Possible causes:'));
+            console.log(chalk.gray('   - Invalid or expired API key'));
+            console.log(chalk.gray('   - Insufficient API key permissions'));
         }
 
         debugTimer.showSummary();

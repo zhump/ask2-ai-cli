@@ -25,7 +25,7 @@ export class DebugTimer {
     this.stageStartTime = Date.now();
     
     if (this.debug) {
-      console.log(chalk.gray(`🔧 [DEBUG] 开始阶段: ${stageName}`));
+      console.log(chalk.gray(`🔧 [DEBUG] Starting stage: ${stageName}`));
     }
   }
 
@@ -35,7 +35,7 @@ export class DebugTimer {
       this.stages.push({ name: this.currentStage, duration });
       
       if (this.debug) {
-        console.log(chalk.gray(`✅ [DEBUG] 完成阶段: ${this.currentStage} (${duration}ms)`));
+        console.log(chalk.gray(`✅ [DEBUG] Completed stage: ${this.currentStage} (${duration}ms)`));
       }
       
       this.currentStage = null;
@@ -44,7 +44,7 @@ export class DebugTimer {
 
   showPrompt(prompt: string): void {
     if (this.debug) {
-      console.log(chalk.blue('\n📝 [DEBUG] 发送给 AI 的提示词:'));
+      console.log(chalk.blue('\n📝 [DEBUG] Prompt sent to AI:'));
       console.log(chalk.gray('─'.repeat(60)));
       console.log(prompt);
       console.log(chalk.gray('─'.repeat(60)));
@@ -53,7 +53,7 @@ export class DebugTimer {
 
   showResponse(response: string): void {
     if (this.debug) {
-      console.log(chalk.green('\n🤖 [DEBUG] AI 原始响应:'));
+      console.log(chalk.green('\n🤖 [DEBUG] AI raw response:'));
       console.log(chalk.gray('─'.repeat(60)));
       console.log(response);
       console.log(chalk.gray('─'.repeat(60)));
@@ -66,7 +66,7 @@ export class DebugTimer {
       
       const totalTime = Date.now() - this.startTime;
       
-      console.log(chalk.magenta('\n📊 [DEBUG] 执行耗时统计:'));
+      console.log(chalk.magenta('\n📊 [DEBUG] Execution timing statistics:'));
       console.log(chalk.gray('─'.repeat(40)));
       
       this.stages.forEach(stage => {
@@ -75,7 +75,7 @@ export class DebugTimer {
       });
       
       console.log(chalk.gray('─'.repeat(40)));
-      console.log(chalk.magenta(`  总耗时: ${totalTime}ms`));
+      console.log(chalk.magenta(`  Total time: ${totalTime}ms`));
       console.log();
     }
   }

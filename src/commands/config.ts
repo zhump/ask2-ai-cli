@@ -9,7 +9,7 @@ export async function configCommand(): Promise<void> {
     // 确保配置文件存在
     await config.load();
     
-    console.log(chalk.blue('打开配置文件:'));
+    console.log(chalk.blue('Opening configuration file:'));
     console.log(chalk.gray(configPath));
     console.log();
     
@@ -22,11 +22,11 @@ export async function configCommand(): Promise<void> {
     });
     
     child.on('error', (error) => {
-      console.error(chalk.red('无法打开编辑器:'), error.message);
-      console.log(chalk.yellow('\n你可以手动编辑配置文件:'));
+      console.error(chalk.red('Unable to open editor:'), error.message);
+      console.log(chalk.yellow('\nYou can manually edit the configuration file:'));
       console.log(chalk.cyan(configPath));
       console.log();
-      console.log(chalk.yellow('需要的配置:'));
+      console.log(chalk.yellow('Required configuration:'));
       console.log(chalk.gray(JSON.stringify({
         apiKey: 'your-zhipu-api-key',
         apiUrl: 'https://open.bigmodel.cn/api/paas/v4/chat/completions',
@@ -37,7 +37,7 @@ export async function configCommand(): Promise<void> {
     
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    console.error(chalk.red('错误:'), errorMessage);
+    console.error(chalk.red('Error:'), errorMessage);
   }
 }
 

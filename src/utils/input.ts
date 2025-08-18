@@ -15,12 +15,12 @@ export function askUserChoice(): Promise<UserChoice> {
   return new Promise((resolve) => {
     const rl = createReadlineInterface();
     
-    console.log('\n选择操作:');
-    console.log('  回车键 - 执行命令');
-    console.log('  N - 退出');
-    console.log('  C - 换个答案');
+    console.log('\nChoose action:');
+    console.log('  Enter - Execute command');
+    console.log('  N - Exit');
+    console.log('  C - Change answer');
     
-    rl.question('\n请选择 (回车/N/C): ', (answer) => {
+    rl.question('\nPlease choose (Enter/N/C): ', (answer) => {
       rl.close();
       
       const input = answer.trim().toLowerCase();
@@ -30,7 +30,7 @@ export function askUserChoice(): Promise<UserChoice> {
       } else if (input === 'c') {
         resolve({ action: 'change' });
       } else {
-        // 默认是执行（包括回车和其他输入）
+        // Default is execute (including Enter and other inputs)
         resolve({ action: 'execute' });
       }
     });
