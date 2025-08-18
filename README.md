@@ -1,172 +1,195 @@
+**English** | [中文文档](README.zh.md)
+
 # Ask CLI
 
-一个基于 自定义AI模型 的命令行助手，可以将自然语言转换为可执行的命令。
+A command-line assistant based on custom AI models that converts natural language into executable commands.
 
-## 仓库地址
+## Repository
 
 🔗 GitHub: [https://github.com/zhump/ask2-ai-cli](https://github.com/zhump/ask2-ai-cli)
 
-## 功能特性
+## Features
 
-- 🤖 使用自定义AI模型
-- 🖥️ 支持 macOS、Linux 和 Windows
-- 🔧 智能识别系统环境
-- ⚡ TypeScript 编写，类型安全
-- 🎯 简单易用的命令行界面
-- 🔍 调试模式，详细耗时分析
-- 📦 智能包管理器检测
+- 🤖 Custom AI model support
+- 🖥️ Cross-platform support (macOS, Linux, Windows)
+- 🔧 Intelligent system environment detection
+- ⚡ TypeScript implementation with type safety
+- 🎯 Simple and intuitive command-line interface
+- 🔍 Debug mode with detailed timing analysis
+- 📦 Smart package manager detection
+- 📋 Command history and logging
 
-## 安装
+## Installation
 
 ```bash
-# 安装依赖
+# Install globally
 npm install ask2-ai-cli -g
 ```
 
-## 配置
+## Configuration
 
-首次使用需要配置 API key：
+Configure your API key on first use:
 
 ```bash
- ask config
+ask config
 ```
 
-或者手动编辑配置文件，添加你的 AI API key。
+Or manually edit the configuration file to add your AI API key.
 
-## 使用方法
+## Usage
 
 ```bash
-# 基本用法
+# Basic usage
 ask "list all files"
 
-# 启用调试模式
+# Enable debug mode
 ask --debug "find all typescript files"
 ask -d "check disk usage"
 
-# 更多示例
+# More examples
 ask "show running processes"
 ask "install nodejs using package manager"
 
-# 测试 AI 连接
+# Test AI connection
 ask test
 ask test --debug
+
+# View command history
+ask log
+ask log --limit 10
+ask log --clear
 ```
 
-### 调试模式
+### Debug Mode
 
-使用 `--debug` 或 `-d` 参数启用调试模式，可以查看：
+Use `--debug` or `-d` flag to enable debug mode and see:
 
-- 📝 发送给 AI 的完整提示词
-- 🤖 AI 的原始响应
-- ⏱️ 各阶段详细耗时统计
+- 📝 Complete prompt sent to AI
+- 🤖 Raw AI response
+- ⏱️ Detailed timing statistics for each stage
 
 ```bash
 ask --debug "show disk usage"
 
-🔧 [DEBUG] 开始阶段: 初始化
-🔧 [DEBUG] 开始阶段: 获取系统信息
-✅ [DEBUG] 完成阶段: 获取系统信息 (2ms)
-🔧 [DEBUG] 开始阶段: 构建提示词
-✅ [DEBUG] 完成阶段: 构建提示词 (1ms)
+🔧 [DEBUG] Starting stage: initialization
+🔧 [DEBUG] Starting stage: get system info
+✅ [DEBUG] Completed stage: get system info (2ms)
+🔧 [DEBUG] Starting stage: build prompt
+✅ [DEBUG] Completed stage: build prompt (1ms)
 
-📝 [DEBUG] 发送给 AI 的提示词:
+📝 [DEBUG] Prompt sent to AI:
 ────────────────────────────────────────────────────────────
-你是一个命令行助手。将自然语言转换为可执行的命令。
+You are a command-line assistant. Convert natural language to executable commands.
 ...
 ────────────────────────────────────────────────────────────
 
-📊 [DEBUG] 执行耗时统计:
+📊 [DEBUG] Execution timing statistics:
 ────────────────────────────────────
-  获取系统信息: 2ms (0.1%)
-  构建提示词: 1ms (0.1%)
-  AI 生成命令: 1250ms (85.2%)
-  显示结果: 1ms (0.1%)
-  等待用户选择: 180ms (12.3%)
-  执行命令: 32ms (2.2%)
+  get system info: 2ms (0.1%)
+  build prompt: 1ms (0.1%)
+  AI generate command: 1250ms (85.2%)
+  display result: 1ms (0.1%)
+  wait user choice: 180ms (12.3%)
+  execute command: 32ms (2.2%)
 ────────────────────────────────────
-  总耗时: 1466ms
+  Total time: 1466ms
 ```
 
-### 交互选项
+### Interactive Options
 
-当 AI 生成命令后，你可以选择：
+After AI generates a command, you can choose:
 
-- **回车键** - 立即执行建议的命令
-- **N** - 取消执行，退出程序
-- **C** - 让 AI 重新生成一个不同的解决方案
+- **Enter** - Execute the suggested command immediately
+- **N** - Cancel execution and exit
+- **C** - Let AI regenerate a different solution
 
-### 使用示例
+### Usage Example
 
 ```bash
 $ ask "show disk usage"
 
-建议的命令:
+Suggested command:
 df -h
 
-⚠️  请仔细检查命令后再执行!
+⚠️  Please review the command carefully before execution!
 
-选择操作:
-  回车键 - 执行命令
-  N - 退出
-  C - 换个答案
+Choose action:
+  Enter - Execute command
+  N - Exit
+  C - Change answer
 
-请选择 (回车/N/C): [回车]
+Please choose (Enter/N/C): [Enter]
 
-执行命令: df -h
+Executing command: df -h
 ──────────────────────────────────────────────────
 Filesystem      Size   Used  Avail Capacity iused      ifree %iused  Mounted on
 /dev/disk3s1s1  460Gi   14Gi  168Gi     8%  553648 1759775352    0%   /
 ...
 ──────────────────────────────────────────────────
-✅ 命令执行完成
+✅ Command executed successfully
 ```
 
-## 命令说明
+## Commands
 
-### `ask [查询]`
-将自然语言转换为可执行命令。
+### `ask [query]`
+Convert natural language to executable commands.
 
-**选项:**
-- `-d, --debug` - 启用调试模式
+**Options:**
+- `-d, --debug` - Enable debug mode
 
-**示例:**
+**Examples:**
 ```bash
-ask "查找所有 .js 文件"
-ask --debug "杀死 3000 端口的进程"
+ask "find all .js files"
+ask --debug "kill process on port 3000"
 ```
 
 ### `ask config`
-打开配置文件设置 API key 和其他配置。
+Open configuration file to set up API key and other settings.
 
 ### `ask test`
-测试 AI 接口连通性和配置。
+Test AI API connectivity and configuration.
 
-**选项:**
-- `-d, --debug` - 显示详细的连接测试信息
+**Options:**
+- `-d, --debug` - Show detailed connection test information
 
-**示例:**
+**Examples:**
 ```bash
 ask test
 ask test --debug
 ```
 
-## 系统支持
+### `ask log`
+Show command history and execution logs.
 
-工具会自动检测并适配你的系统：
+**Options:**
+- `--clear` - Clear all command history
+- `--limit <number>` - Limit number of entries to show
 
-- **操作系统**: macOS, Linux, Windows, WSL
-- **包管理器**: brew, apt, yum, dnf, pacman, winget, choco 等
-- **项目类型**: Node.js, Python, Java, Go, Rust, Git 仓库
-- **Shell**: bash, zsh, fish, PowerShell, cmd
+**Examples:**
+```bash
+ask log                # Show all history
+ask log --limit 10     # Show last 10 entries
+ask log --clear        # Clear history
+```
 
-## 注意事项
+## System Support
 
-⚠️ 请在执行 AI 建议的命令前仔细检查，确保命令安全可靠。
+The tool automatically detects and adapts to your system:
 
-工具内置安全特性：
-- 对潜在危险操作的警告
-- 执行前的交互式确认
-- 调试模式提供透明度
+- **Operating Systems**: macOS, Linux, Windows, WSL
+- **Package Managers**: brew, apt, yum, dnf, pacman, winget, choco, etc.
+- **Project Types**: Node.js, Python, Java, Go, Rust, Git repositories
+- **Shells**: bash, zsh, fish, PowerShell, cmd
+
+## Safety Notes
+
+⚠️ Always review AI-suggested commands before execution to ensure they are safe and appropriate.
+
+The tool includes built-in safety features:
+- Warnings for potentially dangerous operations
+- Interactive confirmation before execution
+- Debug mode for transparency
+- Command history for accountability
 
 ## License
 
@@ -174,4 +197,4 @@ MIT
 
 ---
 
-**中文文档** | [English Documentation](README.en.md)
+**English** | [中文文档](README.zh.md)

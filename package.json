@@ -1,11 +1,11 @@
 {
   "name": "ask2-ai-cli",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "Convert natural language to executable commands",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "ask": "dist/bin/ask.js"
+    "ask": "./dist/bin/ask.js"
   },
   "scripts": {
     "build": "tsc",

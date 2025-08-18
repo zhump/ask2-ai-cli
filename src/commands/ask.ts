@@ -4,6 +4,7 @@ import { getSystemInfo, buildPrompt } from '../utils/system.js';
 import { askUserChoice } from '../utils/input.js';
 import { executeCommand } from '../utils/executor.js';
 import { DebugTimer, type DebugOptions } from '../utils/debug.js';
+import logger from '../utils/logger.js';
 import aiService from '../services/ai.js';
 
 export async function askCommand(query: string, options: DebugOptions = {}): Promise<void> {
@@ -57,16 +58,58 @@ export async function askCommand(query: string, options: DebugOptions = {}): Pro
           try {
             debugTimer.startStage('执行命令');
             await executeCommand(currentCommand);
+            
+            // 记录成功执行的命令
+            await logger.addLog({
+              timestamp: new Date().toISOString(),
+              query,
+              command: currentCommand,
+              executed: true,
+              systemInfo: {
+                os: systemInfo.systemName,
+                arch: systemInfo.arch,
+                shell: systemInfo.shell
+              }
+            });
+            
             debugTimer.showSummary();
             return; // 执行完成，退出循环
           } catch (error) {
             console.error(chalk.red('\n执行命令时出错，但程序继续运行'));
+            
+            // 记录执行失败的命令
+            await logger.addLog({
+              timestamp: new Date().toISOString(),
+              query,
+              command: currentCommand,
+              executed: false,
+              systemInfo: {
+                os: systemInfo.systemName,
+                arch: systemInfo.arch,
+                shell: systemInfo.shell
+              }
+            });
+            
             debugTimer.showSummary();
             return;
           }
           
         case 'exit':
           console.log(chalk.gray('\n已取消执行'));
+          
+          // 记录取消的命令
+          await logger.addLog({
+            timestamp: new Date().toISOString(),
+            query,
+            command: currentCommand,
+            executed: false,
+            systemInfo: {
+              os: systemInfo.systemName,
+              arch: systemInfo.arch,
+              shell: systemInfo.shell
+            }
+          });
+          
           debugTimer.showSummary();
           return; // 用户选择退出
           
