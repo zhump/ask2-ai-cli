@@ -6,6 +6,9 @@
 
 🔗 GitHub: [https://github.com/zhump/ask2-ai-cli](https://github.com/zhump/ask2-ai-cli)
 
+# DEMO
+![Demo GIF](./example.gif)
+
 ## 功能特性
 
 - 🤖 使用自定义AI模型
@@ -202,7 +205,3 @@ ask log --clear        # 清空历史
 ## License
 
 MIT
-
----
-
-[English](./README.md) | **中文文档**

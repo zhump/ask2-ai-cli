@@ -1,15 +1,11 @@
-**English** | [中文文档](./README.md)
+**English** | [中文文档](https://github.com/zhump/ask2-ai-cli/blob/main/README.zh.md)
 
 # Ask CLI
 
 A command-line assistant based on custom AI models that converts natural language into executable commands.
 
 # DEMO
-
-<video controls width="640" height="360">
-  <source src="./example.mp4" type="video/mp4">
-  您的浏览器不支持 video 标签。
-</video>
+![Demo GIF](./example.gif)
 
 ## Repository
 
@@ -229,6 +225,3 @@ The tool includes built-in safety features:
 
 MIT
 
----
-
-**English** | [中文文档](README.zh.md)
