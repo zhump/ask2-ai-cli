@@ -151,22 +151,28 @@ System Information:
 
 User Request: "${query}"
 
-Requirements:
-1. Output ONLY one directly executable command, no explanations
-2. Command must be compatible with ${systemInfo.systemName} system
-3. Use safe, commonly-used options and parameters
-4. Use ${systemInfo.shell} shell syntax
-5. For package management, prefer ${systemInfo.packageManager || 'system default'}
-6. For file/directory operations:
+CRITICAL OUTPUT FORMAT REQUIREMENTS:
+- Return ONLY the executable command, nothing else
+- NO markdown code blocks (\`\`\`bash or \`\`\` or backticks)  
+- NO explanations or descriptions
+- NO extra text before or after the command
+- The response should be ready to execute directly when user presses Enter
+
+Technical Requirements:
+1. Command must be compatible with ${systemInfo.systemName} system
+2. Use safe, commonly-used options and parameters  
+3. Use ${systemInfo.shell} shell syntax
+4. For package management, prefer ${systemInfo.packageManager || 'system default'}
+5. For file/directory operations:
    - Use appropriate flags (e.g., -r for directories, -f for force)
    - Consider whether target is file or directory
    - Use safe deletion methods when possible
 
 Important Notes:
 - For deleting directories: use 'rm -rf' or 'rmdir' as appropriate
-- For deleting files: use 'rm' with appropriate flags
+- For deleting files: use 'rm -rf' with appropriate flags  
 - For system operations: include necessary privileges (sudo) when required
 - Always generate working, tested command patterns${fileContext}${safetyNote}
 
-Command:`;
+Generate the executable command now:`;
 }

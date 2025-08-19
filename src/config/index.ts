@@ -9,7 +9,7 @@ const DEFAULT_CONFIG: ConfigData = {
   apiKey: '',
   apiUrl: 'https://open.bigmodel.cn/api/paas/v4/chat/completions',
   model: 'glm-4.5',
-  temperature: 0.6
+  temperature: 0.3
 };
 
 class Config {

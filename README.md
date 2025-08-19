@@ -40,7 +40,18 @@ Configure your API key on first use:
 ask config
 ```
 
-Or manually edit the configuration file to add your AI API key.
+Based on the configuration file path printed out by the config command, manually edit the configuration file to add your AI API key.
+
+```json
+{
+  "apiKey": "your-api-key-here",
+  "apiUrl": "https://open.bigmodel.cn/api/paas/v4/chat/completions",
+  "model": "glm-4.5",
+  "temperature": 0.6
+}
+```
+
+Run `ask test` to verify whether the configuration has taken effect.
 
 ## Usage
 

@@ -39,7 +39,7 @@ export async function configCommand(): Promise<void> {
       apiKey: 'your-api-key-here',
       apiUrl: 'https://open.bigmodel.cn/api/paas/v4/chat/completions',
       model: 'glm-4.5',
-      temperature: 0.6
+      temperature: 0.3
     }, null, 2)));
     
   } catch (error) {

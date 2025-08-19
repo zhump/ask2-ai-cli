@@ -38,7 +38,19 @@ npm install ask2-ai-cli -g
  ask config
 ```
 
-或者手动编辑配置文件，添加你的 AI API key。
+根据config命令打印出的配置文件路径，手动编辑配置文件以添加您的AI API密钥。
+
+
+```json
+{
+  "apiKey": "your-api-key-here",
+  "apiUrl": "https://open.bigmodel.cn/api/paas/v4/chat/completions",
+  "model": "glm-4.5",
+  "temperature": 0.3
+}
+```
+
+运行 `ask test` 验证配置是否生效。
 
 ## 使用方法
 
