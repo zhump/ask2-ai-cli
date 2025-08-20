@@ -2,6 +2,7 @@ import chalk from 'chalk';
 
 export interface DebugOptions {
   debug?: boolean;
+  modelName?: string;
 }
 
 export class DebugTimer {

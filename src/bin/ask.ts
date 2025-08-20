@@ -46,11 +46,11 @@ program
   .action(configCommand);
 
 program
-  .command('test')
-  .description('Test AI API connectivity and configuration')
+  .command('test [modelName]')
+  .description('Test AI API connectivity and configuration for a specific model or current active model')
   .option('-d, --debug', 'Show detailed connection test information')
-  .action(async (options) => {
-    await testCommand({ debug: options.debug });
+  .action(async (modelName, options) => {
+    await testCommand({ debug: options.debug, modelName });
   });
 
 program

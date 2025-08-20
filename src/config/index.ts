@@ -134,6 +134,17 @@ class Config {
     await fs.writeFile(this.configPath, JSON.stringify(config, null, 2));
   }
 
+  // 根据名称获取指定模型配置
+  async getModelByName(modelName: string): Promise<ConfigModel | null> {
+    try {
+      const config = await this.loadArray();
+      const model = config.models.find(m => m.name === modelName);
+      return model || null;
+    } catch (error) {
+      return null;
+    }
+  }
+
   // 切换到指定名称的模型
   async useModel(modelName: string): Promise<{ success: boolean; message: string; model?: ConfigModel }> {
     try {

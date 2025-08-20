@@ -9,6 +9,11 @@ export async function testCommand(options: DebugOptions = {}): Promise<void> {
 
     console.log(chalk.blue('🔧 Testing AI API connectivity...\n'));
 
+    // Show which model is being tested
+    if (options.modelName) {
+        console.log(chalk.cyan(`🎯 Testing specific model: ${options.modelName}\n`));
+    }
+
     debugTimer.startStage('Test initialization');
 
     const spinner = ora('Testing AI connection...').start();
@@ -35,7 +40,38 @@ Just reply "Connection successful":`;
         // Test AI connection
         debugTimer.startStage('Test AI connection');
         const startTime = Date.now();
-        const response = await aiService.generateCommand(testPrompt);
+        
+        let response: string;
+        let testConfig: any;
+        
+        if (options.modelName) {
+            // Test specific model
+            const config = (await import('../config/index.js')).default;
+            const modelConfig = await config.getModelByName(options.modelName);
+            
+            if (!modelConfig) {
+                spinner.stop();
+                console.log(chalk.red(`❌ Model '${options.modelName}' not found!`));
+                console.log(chalk.yellow('\n💡 Available models:'));
+                const configArray = await config.loadArray();
+                configArray.models.forEach(model => {
+                    console.log(chalk.gray(`   - ${model.name}`));
+                });
+                process.exit(1);
+            }
+            
+            response = await aiService.generateCommandWithConfig(testPrompt, modelConfig);
+            testConfig = modelConfig;
+        } else {
+            // Test current active model
+            response = await aiService.generateCommand(testPrompt);
+            const config = (await import('../config/index.js')).default;
+            const configArray = await config.loadArray();
+            // Find the currently enabled model
+            const activeModel = configArray.models.find(model => model.enabled);
+            testConfig = activeModel || await config.load(); // Fallback to old format if no active model found
+        }
+        
         const responseTime = Date.now() - startTime;
 
         debugTimer.showResponse(response);
@@ -59,12 +95,17 @@ Just reply "Connection successful":`;
         }
 
         // Show configuration information
-        console.log(chalk.blue('\n📋 Current configuration:'));
-        const config = (await import('../config/index.js')).default;
-        const configData = await config.load();
-        console.log(chalk.gray(`   API URL: ${configData.apiUrl}`));
-        console.log(chalk.gray(`   Model: ${configData.model}`));
-        console.log(chalk.gray(`   Temperature: ${configData.temperature}`));
+        console.log(chalk.blue('\n📋 Tested configuration:'));
+        if (options.modelName) {
+            console.log(chalk.gray(`   Model Name: ${testConfig.name}`));
+        } else {
+            // For current active model, show the real name if available
+            const modelName = testConfig.name || '(Current Active Model)';
+            console.log(chalk.gray(`   Model Name: ${modelName}`));
+        }
+        console.log(chalk.gray(`   API URL: ${testConfig.apiUrl}`));
+        console.log(chalk.gray(`   Model: ${testConfig.model}`));
+        console.log(chalk.gray(`   Temperature: ${testConfig.temperature}`));
 
         debugTimer.showSummary();
 
