@@ -5,6 +5,19 @@ export interface ConfigData {
   temperature: number;
 }
 
+export interface ConfigModel {
+  name: string;
+  apiKey: string;
+  apiUrl: string;
+  model: string;
+  temperature: number;
+  enabled: boolean;
+}
+
+export interface ConfigArrayData {
+  models: ConfigModel[];
+}
+
 export interface SystemInfo {
   platform: NodeJS.Platform;
   systemName: string;

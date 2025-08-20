@@ -1,132 +1,138 @@
 # Ask CLI
 
-一个基于 自定义AI模型 的命令行助手，可以将自然语言转换为可执行的命令。
+基于AI的强大命令行助手，将自然语言转换为可执行命令。支持多模型管理、智能切换和全面的安全检查。
 
-## 仓库地址
-
-🔗 GitHub: [https://github.com/zhump/ask2-ai-cli](https://github.com/zhump/ask2-ai-cli)
-
-# DEMO
 ![Demo GIF](https://636c-cloudbase-9g52ks1b1d834b1a-1364764776.tcb.qcloud.la/case.gif)
 
-## 功能特性
+## 🔗 仓库地址
 
-- 🤖 使用自定义AI模型
-- 🖥️ 支持 macOS、Linux 和 Windows
-- 🔧 智能识别系统环境
-- ⚡ TypeScript 编写，类型安全
-- 🎯 简单易用的命令行界面
-- 🔍 调试模式，详细耗时分析
-- 📦 智能包管理器检测
-- 📋 命令历史记录和日志
-- 🛡️ 危险操作高级安全检查
-- 📚 命令解释和教育功能
-- 🔐 权限提升检测和建议
+GitHub: [https://github.com/zhump/ask2-ai-cli](https://github.com/zhump/ask2-ai-cli)
 
-## 安装
+## ✨ 核心特性
+
+### 🎯 多AI模型支持
+- **配置多个AI模型**，支持不同设置（温度参数、API端点）
+- **简单切换模型**，使用简单命令即可
+- **智能模型管理**，带有可视化状态指示器
+
+
+### 🛡️ 高级安全保护
+- **危险命令检测**，双重确认机制
+- **权限提升警告**和建议
+- **交互式确认**，执行前人工审核
+- **命令解释**，教育性功能
+
+### 🔧 开发者友好
+- **调试模式**，详细时间统计和提示词可见性
+- **命令历史记录**，执行跟踪
+- **跨平台支持**（macOS、Linux、Windows、WSL）
+- **智能环境检测**（Shell、包管理器、项目类型）
+
+## 🚀 安装
 
 ```bash
-# 安装依赖
 npm install ask2-ai-cli -g
 ```
 
-## 配置
+## ⚙️ 配置
 
-首次使用需要配置 API key：
-
+### 初始设置
 ```bash
- ask config
+ask config
 ```
+显示配置文件路径，编辑文件添加API配置：
 
-根据config命令打印出的配置文件路径，手动编辑配置文件以添加您的AI API密钥。
-
-
+### 配置格式
 ```json
 {
-  "apiKey": "your-api-key-here",
-  "apiUrl": "https://open.bigmodel.cn/api/paas/v4/chat/completions",
-  "model": "glm-4.5",
-  "temperature": 0.3
+  "models": [
+    {
+      "name": "moonshotai/kimi-k2:free",
+      "apiKey": "your-api-key-here",
+      "apiUrl": "https://openrouter.ai/api/v1/chat/completions",
+      "model": "moonshotai/kimi-k2:free",
+      "temperature": 0.3,
+      "enabled": true
+    },
+    {
+      "name": "Creative Mode",
+      "apiKey": "your-api-key-here",
+      "apiUrl": "https://open.bigmodel.cn/api/paas/v4/chat/completions",
+      "model": "glm-4.5",
+      "temperature": 0.3,
+      "enabled": false
+    }
+  ]
 }
 ```
+> 推荐使用openrouter免费的模型API和您内网的模型API，避免信息泄漏，增强安全性。
 
-运行 `ask test` 验证配置是否生效。
-
-## 使用方法
-
+### 测试配置
 ```bash
-# 基本用法
-ask "list all files"
-
-# 启用调试模式
-ask --debug "find all typescript files"
-ask -d "check disk usage"
-
-# 获取命令解释
-ask --explain "find all typescript files"
-ask -e "delete old log files"
-
-# 更多示例
-ask "show running processes"
-ask "install nodejs using package manager"
-
-# 测试 AI 连接
 ask test
-ask test --debug
-
-# 查看命令历史
-ask log
-ask log --limit 10
-ask log --clear
 ```
 
-### 调试模式
+## 📖 使用方法
 
-使用 `--debug` 或 `-d` 参数启用调试模式，可以查看：
-
-- 📝 发送给 AI 的完整提示词
-- 🤖 AI 的原始响应
-- ⏱️ 各阶段详细耗时统计
-
+### 基本命令
 ```bash
-ask --debug "show disk usage"
+# 生成并执行命令
+ask 列出所有文件
+ask 查找大于100MB的大文件
+ask 杀死3000端口的进程
 
-🔧 [DEBUG] 开始阶段: 初始化
-🔧 [DEBUG] 开始阶段: 获取系统信息
-✅ [DEBUG] 完成阶段: 获取系统信息 (2ms)
-🔧 [DEBUG] 开始阶段: 构建提示词
-✅ [DEBUG] 完成阶段: 构建提示词 (1ms)
+# 模型管理
+ask ls                     # 列出所有模型
+ask use xxx                # 切换模型
+ask config                 # 查看配置
 
-📝 [DEBUG] 发送给 AI 的提示词:
-────────────────────────────────────────────────────────────
-你是一个命令行助手。将自然语言转换为可执行的命令。
-...
-────────────────────────────────────────────────────────────
-
-📊 [DEBUG] 执行耗时统计:
-────────────────────────────────────
-  获取系统信息: 2ms (0.1%)
-  构建提示词: 1ms (0.1%)
-  AI 生成命令: 1250ms (85.2%)
-  显示结果: 1ms (0.1%)
-  等待用户选择: 180ms (12.3%)
-  执行命令: 32ms (2.2%)
-────────────────────────────────────
-  总耗时: 1466ms
+# 高级选项
+ask --debug "复杂查询"      # 调试模式
+ask --explain "rm -rf 文件夹" # 获取解释
 ```
 
-### 交互选项
+### 模型管理工作流
 
-当 AI 生成命令后，你可以选择：
+**1. 列出可用模型**
+```bash
+ask ls
+```
+```
+📋 Available Models
+──────────────────────────────────────────────────
+✅ GLM-4.5 主要
+   Model: glm-4.5 | Temperature: 0.3 | API: open.bigmodel.cn
+⚪ 创意模式  
+   Model: glm-4.5 | Temperature: 0.8 | API: open.bigmodel.cn
+──────────────────────────────────────────────────
+🎯 Current: GLM-4.5 主要
+```
 
-- **回车键** - 立即执行建议的命令
-- **N** - 取消执行，退出程序
-- **C** - 让 AI 重新生成一个不同的解决方案
+**2. 切换模型**
+```bash
+ask use qwen3
+```
+```
+✅ Successfully switched to model qwen3
 
-### 使用示例
+📋 Active model details:
+──────────────────────────────
+  Name: qwen3
+  Model: qwen3
+  Temperature: 0.8
+```
+
+### 交互式命令流程
+
+Ask生成命令后，你可以选择：
+
+- **回车** → 立即执行
+- **N** → 取消并退出  
+- **C** → 生成不同解决方案
+- **E** → 获取详细解释
 
 ```bash
-$ ask "show disk usage"
+$ ask 检查磁盘空间
 
 建议的命令:
 df -h
@@ -134,86 +140,81 @@ df -h
 ⚠️  请仔细检查命令后再执行!
 
 选择操作:
-  回车键 - 执行命令
+  回车 - 执行命令
   N - 退出
   C - 换个答案
+  E - 解释命令
 
-请选择 (回车/N/C): [回车]
+请选择 (回车/N/C/E): [E]
 
-执行命令: df -h
+📚 命令解释
 ──────────────────────────────────────────────────
-Filesystem      Size   Used  Avail Capacity iused      ifree %iused  Mounted on
-/dev/disk3s1s1  460Gi   14Gi  168Gi     8%  553648 1759775352    0%   /
-...
-──────────────────────────────────────────────────
-✅ 命令执行完成
+命令: df -h
+
+解释:
+• df: 显示文件系统磁盘空间使用情况
+• -h: 人类可读格式（KB、MB、GB而不是字节）
+• 显示可用空间、已用空间和挂载点
+• 安全的只读操作，不会改变系统
 ```
 
-## 命令说明
+## 🔧 命令参考
 
-### `ask [查询]`
-将自然语言转换为可执行命令。
+| 命令 | 描述 | 示例 |
+|------|------|------|
+| `ask [查询]` | 将自然语言转换为命令，无需双引号 | `ask 安装docker` |
+| `ask ls` | 列出所有模型配置 | `ask ls` |
+| `ask use <名称>` | 切换到指定模型 | `ask use "创意模式"` |
+| `ask config` | 显示配置文件路径和内容 | `ask config` |
+| `ask test` | 测试AI连接 | `ask test --debug` |
+| `ask log` | 查看命令历史 | `ask log --limit 10` |
 
-**选项:**
-- `-d, --debug` - 启用调试模式，显示详细时间和提示信息
-- `-e, --explain` - 提供生成命令的详细解释
+### 命令选项
 
-**示例:**
+**全局选项:**
+- `--debug, -d` → 启用带时间信息的调试模式
+- `--explain, -e` → 获取命令解释
+
+**日志选项:**
+- `--clear` → 清除命令历史
+- `--limit <n>` → 显示最近N条记录
+
+## 🛡️ 安全特性
+
+### 危险命令保护
 ```bash
-ask "查找所有 .js 文件"
-ask --debug "杀死 3000 端口的进程"
-ask --explain "删除旧日志文件"
-ask -de "安装 nodejs"  # 同时启用调试和解释
+$ ask 删除当前目录下的所有文件
+
+⚠️  检测到危险操作！
+此命令可能对您的系统造成不可逆的损害:
+rm -rf *
+
+您确定要执行此命令吗？
+
+按回车键明确确认（其他任何输入将取消）: [取消]
+
+✅ 为安全起见，操作已取消。
 ```
 
-### `ask config`
-显示当前配置和文件路径。展示 API 设置和配置位置。
-
-### `ask test`
-测试 AI 接口连通性和配置。
-
-**选项:**
-- `-d, --debug` - 显示详细的连接测试信息
-
-**示例:**
+### 权限提升检测
 ```bash
-ask test
-ask test --debug
+$ ask 安装nginx
+
+建议的命令:
+apt install nginx
+
+⚠️  此命令可能需要提升权限。
+建议使用: sudo apt install nginx
 ```
 
-### `ask log`
-显示命令历史和执行日志。
 
-**选项:**
-- `--clear` - 清空所有命令历史
-- `--limit <数量>` - 限制显示的条目数量
+## 🌍 系统支持
 
-**示例:**
-```bash
-ask log                # 显示所有历史
-ask log --limit 10     # 显示最近 10 条
-ask log --clear        # 清空历史
-```
+**操作系统:** macOS、Linux、Windows、WSL  
+**包管理器:** brew、apt、yum、dnf、pacman、winget、choco  
+**项目类型:** Node.js、Python、Java、Go、Rust、Git仓库  
+**Shell:** bash、zsh、fish、PowerShell、cmd  
 
-## 系统支持
-
-工具会自动检测并适配你的系统：
-
-- **操作系统**: macOS, Linux, Windows, WSL
-- **包管理器**: brew, apt, yum, dnf, pacman, winget, choco 等
-- **项目类型**: Node.js, Python, Java, Go, Rust, Git 仓库
-- **Shell**: bash, zsh, fish, PowerShell, cmd
-
-## 注意事项
-
-⚠️ 请在执行 AI 建议的命令前仔细检查，确保命令安全可靠。
-
-工具内置安全特性：
-- 对潜在危险操作的警告
-- 执行前的交互式确认
-- 调试模式提供透明度
-- 命令历史记录便于追溯
-
-## License
+## 📝 许可证
 
 MIT

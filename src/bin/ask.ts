@@ -6,6 +6,8 @@ import { askCommand } from '../commands/ask.js';
 import { configCommand } from '../commands/config.js';
 import { testCommand } from '../commands/test.js';
 import { logCommand } from '../commands/log.js';
+import { useCommand } from '../commands/use.js';
+import { lsCommand } from '../commands/ls.js';
 
 program
   .name('ask')
@@ -58,6 +60,21 @@ program
   .option('--limit <number>', 'Limit number of entries to show', parseInt)
   .action(async (options) => {
     await logCommand({ clear: options.clear, limit: options.limit });
+  });
+
+program
+  .command('use')
+  .description('Switch to a specific model configuration')
+  .argument('<model-name>', 'Name of the model to switch to')
+  .action(async (modelName: string) => {
+    await useCommand(modelName);
+  });
+
+program
+  .command('ls')
+  .description('List all available model configurations')
+  .action(async () => {
+    await lsCommand();
   });
 
 program.parse();

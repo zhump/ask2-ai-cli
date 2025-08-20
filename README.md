@@ -2,150 +2,146 @@
 
 # Ask CLI
 
-A command-line assistant based on custom AI models that converts natural language into executable commands.
+A powerful command-line assistant that converts natural language into executable commands using AI. Features multiple model management, intelligent switching, and comprehensive safety checks.
 
-# DEMO
 ![Demo GIF](https://636c-cloudbase-9g52ks1b1d834b1a-1364764776.tcb.qcloud.la/case.gif)
 
-## Repository
+## 🔗 Repository
 
-🔗 GitHub: [https://github.com/zhump/ask2-ai-cli](https://github.com/zhump/ask2-ai-cli)
+GitHub: [https://github.com/zhump/ask2-ai-cli](https://github.com/zhump/ask2-ai-cli)
 
-## Features
+## ✨ Key Features
 
-- 🤖 Custom AI model support
-- 🖥️ Cross-platform support (macOS, Linux, Windows)
-- 🔧 Intelligent system environment detection
-- ⚡ TypeScript implementation with type safety
-- 🎯 Simple and intuitive command-line interface
-- 🔍 Debug mode with detailed timing analysis
-- 📦 Smart package manager detection
-- 📋 Command history and logging
-- 🛡️ Advanced safety checks for dangerous operations
-- 📚 Command explanation and educational features
-- 🔐 Privilege escalation detection and suggestions
+### 🎯 Multiple AI Model Support
+- **Configure multiple AI models** with different settings (temperature, API endpoints)
+- **Easy switching** between models with simple commands
+- **Smart model management** with visual status indicators
+- **Automatic upgrade** from single-model to multi-model configurations
 
-## Installation
+### 🛡️ Advanced Safety
+- **Dangerous command detection** with double confirmation
+- **Privilege escalation warnings** and suggestions
+- **Interactive confirmation** before command execution
+- **Command explanations** for educational purposes
+
+### � Developer-Friendly
+- **Debug mode** with detailed timing and prompt visibility
+- **Command history** with execution tracking
+- **Cross-platform support** (macOS, Linux, Windows, WSL)
+- **Smart environment detection** (shells, package managers, project types)
+
+## 🚀 Installation
 
 ```bash
-# Install globally
 npm install ask2-ai-cli -g
 ```
 
-## Configuration
+## ⚙️ Configuration
 
-Configure your API key on first use:
-
+### Initial Setup
 ```bash
 ask config
 ```
+This shows your configuration file path. Edit the file to add your API configuration:
 
-Based on the configuration file path printed out by the config command, manually edit the configuration file to add your AI API key.
-
+### Configuration Format
 ```json
 {
-  "apiKey": "your-api-key-here",
-  "apiUrl": "https://open.bigmodel.cn/api/paas/v4/chat/completions",
-  "model": "glm-4.5",
-  "temperature": 0.6
+  "models": [
+    {
+      "name": "moonshotai/kimi-k2:free",
+      "apiKey": "your-api-key-here",
+      "apiUrl": "https://openrouter.ai/api/v1/chat/completions",
+      "model": "moonshotai/kimi-k2:free",
+      "temperature": 0.3,
+      "enabled": true
+    },
+    {
+      "name": "glm-4.5",
+      "apiKey": "your-api-key-here",
+      "apiUrl": "https://open.bigmodel.cn/api/paas/v4/chat/completions",
+      "model": "glm-4.5",
+      "temperature": 0.3,
+      "enabled": false
+    }
+  ]
 }
 ```
+> Recommend using openrouter's free model API and your internal model API to avoid information leakage and enhance security.
 
-Run `ask test` to verify whether the configuration has taken effect.
 
-## Usage
-
+### Test Your Setup
 ```bash
-# Basic usage
-ask "list all files"
-
-# Enable debug mode
-ask --debug "find all typescript files"
-ask -d "check disk usage"
-
-# Get command explanation
-ask --explain "find all typescript files"
-ask -e "delete old log files"
-
-# More examples
-ask "show running processes"
-ask "install nodejs using package manager"
-
-# Test AI connection
 ask test
-ask test --debug
-
-# View command history
-ask log
-ask log --limit 10
-ask log --clear
 ```
 
-### Debug Mode
+## 📖 Usage
 
-Use `--debug` or `-d` flag to enable debug mode and see:
-
-- 📝 Complete prompt sent to AI
-- 🤖 Raw AI response
-- ⏱️ Detailed timing statistics for each stage
-
+### Basic Commands
 ```bash
-ask --debug "show disk usage"
+# Generate and execute commands
+ask list all files
+ask find large files over 100MB
+ask kill process on port 3000
 
-🔧 [DEBUG] Starting stage: initialization
-🔧 [DEBUG] Starting stage: get system info
-✅ [DEBUG] Completed stage: get system info (2ms)
-🔧 [DEBUG] Starting stage: build prompt
-✅ [DEBUG] Completed stage: build prompt (1ms)
+# Model management
+ask ls                     # List all models
+ask use qwen3    # Switch models
+ask config                 # View configuration
 
-📝 [DEBUG] Prompt sent to AI:
-────────────────────────────────────────────────────────────
-You are a command-line assistant. Convert natural language to executable commands.
-...
-────────────────────────────────────────────────────────────
-
-📊 [DEBUG] Execution timing statistics:
-────────────────────────────────────
-  get system info: 2ms (0.1%)
-  build prompt: 1ms (0.1%)
-  AI generate command: 1250ms (85.2%)
-  display result: 1ms (0.1%)
-  wait user choice: 180ms (12.3%)
-  execute command: 32ms (2.2%)
-────────────────────────────────────
-  Total time: 1466ms
+# Advanced options
+ask --debug complex query       # Debug mode
+ask --explain rm -rf folder     # Get explanations
 ```
 
-### Interactive Options
+### Model Management Workflow
 
-After AI generates a command, you can choose:
+**1. List Available Models**
+```bash
+ask ls
+```
+```
+📋 Available Models
+──────────────────────────────────────────────────
+✅ GLM-4.5 Main
+   Model: glm-4.5 | Temperature: 0.3 | API: open.bigmodel.cn
+⚪ Creative Mode  
+   Model: glm-4.5 | Temperature: 0.8 | API: open.bigmodel.cn
+──────────────────────────────────────────────────
+🎯 Current: GLM-4.5 Main
+```
 
-- **Enter** - Execute the suggested command immediately
-- **N** - Cancel execution and exit
-- **C** - Let AI regenerate a different solution
-- **E** - Get detailed explanation of the command
+**2. Switch Models**
+```bash
+ask use qwen3
+```
+```
+✅ Successfully switched to model 'Creative Mode'
 
-### Safety Features
+📋 Active model details:
+──────────────────────────────
+  Name: Creative Mode
+  Model: qwen3
+  Temperature: 0.3
+```
 
-The tool includes advanced safety mechanisms:
 
-- **🛡️ Dangerous Operation Detection**: Automatically detects potentially harmful commands (rm -rf, dd, etc.)
-- **🔒 Double Confirmation**: Requires explicit confirmation for dangerous operations
-- **👑 Privilege Detection**: Warns when commands need elevated privileges and suggests proper escalation
-- **📚 Command Education**: Provides detailed explanations to help users understand what commands do
+### Interactive Command Flow
 
-### Usage Example
+When Ask generates a command, you can:
+
+- **Enter** → Execute immediately
+- **N** → Cancel and exit  
+- **C** → Generate different solution
+- **E** → Get detailed explanation
 
 ```bash
-$ ask "show disk usage"
+$ ask check disk space
 
 Suggested command:
 df -h
 
 ⚠️  Please review the command carefully before execution!
-
-⚠️  This command may require elevated privileges.
-Consider using: sudo df -h
 
 Choose action:
   Enter - Execute command
@@ -153,86 +149,76 @@ Choose action:
   C - Change answer
   E - Explain command
 
-Please choose (Enter/N/C/E): [Enter]
+Please choose (Enter/N/C/E): [E]
 
-Executing command: df -h
+📚 Command Explanation
 ──────────────────────────────────────────────────
-Filesystem      Size   Used  Avail Capacity iused      ifree %iused  Mounted on
-/dev/disk3s1s1  460Gi   14Gi  168Gi     8%  553648 1759775352    0%   /
-...
-──────────────────────────────────────────────────
-✅ Command executed successfully
+Command: df -h
+
+Explanation:
+• df: Display filesystem disk space usage
+• -h: Human-readable format (KB, MB, GB instead of bytes)
+• Shows available space, used space, and mount points
+• Safe read-only operation with no system changes
 ```
 
-## Commands
+## 🔧 Command Reference
 
-### `ask [query]`
-Convert natural language to executable commands.
+| Command | Description | Example |
+|---------|-------------|---------|
+| `ask [query]` | Convert natural language to commands | `ask install docker` |
+| `ask ls` | List all model configurations | `ask ls` |
+| `ask use <name>` | Switch to specific model | `ask use "Creative Mode"` |
+| `ask config` | Show configuration file path and content | `ask config` |
+| `ask test` | Test AI connectivity | `ask test --debug` |
+| `ask log` | View command history | `ask log --limit 10` |
 
-**Options:**
-- `-d, --debug` - Enable debug mode with detailed timing and prompt info
-- `-e, --explain` - Provide detailed explanation of the generated command
+### Command Options
 
-**Examples:**
+**Global Options:**
+- `--debug, -d` → Enable debug mode with timing info
+- `--explain, -e` → Get command explanations
+
+**Log Options:**
+- `--clear` → Clear command history
+- `--limit <n>` → Show last N entries
+
+## 🛡️ Safety Features
+
+### Dangerous Command Protection
 ```bash
-ask "find all .js files"
-ask --debug "kill process on port 3000"
-ask --explain "delete old log files"
-ask -de "install nodejs"  # Both debug and explain
+$ ask "delete all files in current directory"
+
+⚠️  DANGEROUS OPERATION DETECTED!
+This command may cause irreversible damage to your system:
+rm -rf *
+
+Are you absolutely sure you want to execute this command?
+
+Press Enter to confirm explicitly (anything else will cancel): [Cancel]
+
+✅ Operation cancelled for safety.
 ```
 
-### `ask config`
-Display current configuration and file path. Shows API settings and configuration location.
-
-### `ask test`
-Test AI API connectivity and configuration.
-
-**Options:**
-- `-d, --debug` - Show detailed connection test information
-
-**Examples:**
+### Privilege Escalation Detection
 ```bash
-ask test
-ask test --debug
+$ ask "install nginx"
+
+Suggested command:
+apt install nginx
+
+⚠️  This command may require elevated privileges.
+Consider using: sudo apt install nginx
 ```
 
-### `ask log`
-Show command history and execution logs.
+## 🌍 System Support
 
-**Options:**
-- `--clear` - Clear all command history
-- `--limit <number>` - Limit number of entries to show
+**Operating Systems:** macOS, Linux, Windows, WSL  
+**Package Managers:** brew, apt, yum, dnf, pacman, winget, choco  
+**Project Types:** Node.js, Python, Java, Go, Rust, Git repositories  
+**Shells:** bash, zsh, fish, PowerShell, cmd  
 
-**Examples:**
-```bash
-ask log                # Show all history
-ask log --limit 10     # Show last 10 entries
-ask log --clear        # Clear history
-```
-
-## System Support
-
-The tool automatically detects and adapts to your system:
-
-- **Operating Systems**: macOS, Linux, Windows, WSL
-- **Package Managers**: brew, apt, yum, dnf, pacman, winget, choco, etc.
-- **Project Types**: Node.js, Python, Java, Go, Rust, Git repositories
-- **Shells**: bash, zsh, fish, PowerShell, cmd
-
-## Safety Notes
-
-⚠️ Always review AI-suggested commands before execution to ensure they are safe and appropriate.
-
-The tool includes built-in safety features:
-- **Dangerous Command Detection**: Identifies potentially harmful operations
-- **Double Confirmation**: Requires "YES I AM SURE" for dangerous commands
-- **Privilege Escalation Warnings**: Suggests sudo/admin when needed
-- **Interactive Confirmation**: Always asks before execution
-- **Command Explanations**: Educational features to understand commands
-- **Debug Mode Transparency**: Full visibility into AI decision-making
-- **Command History**: Complete audit trail for accountability
-
-## License
+## 📝 License
 
 MIT
 
