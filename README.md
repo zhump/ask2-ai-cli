@@ -12,6 +12,13 @@ GitHub: [https://github.com/zhump/ask2-ai-cli](https://github.com/zhump/ask2-ai-
 
 ## ✨ Key Features
 
+### 🎯 Shell Integration
+- **askx helper function** for seamless shell history integration
+- **One-command installation** with automatic shell detection
+- **Press Enter to execute** with streamlined confirmation
+- **Color-coded command display** for better readability
+- **Automatic cleanup** and easy uninstallation
+
 ### 🎯 Multiple AI Model Support
 - **Configure multiple AI models** with different settings (temperature, API endpoints)
 - **Easy switching** between models with simple commands
@@ -24,7 +31,7 @@ GitHub: [https://github.com/zhump/ask2-ai-cli](https://github.com/zhump/ask2-ai-
 - **Interactive confirmation** before command execution
 - **Command explanations** for educational purposes
 
-### � Developer-Friendly
+### 💻 Developer-Friendly
 - **Debug mode** with detailed timing and prompt visibility
 - **Command history** with execution tracking
 - **Cross-platform support** (macOS, Linux, Windows, WSL)
@@ -77,9 +84,47 @@ ask test
 
 ## 📖 Usage
 
+### Shell Integration (Recommended)
+
+For the best experience with shell history support, install the `askx` helper function:
+
+```bash
+# Install askx function to your shell
+ask install
+
+# Reload your shell configuration
+source ~/.zshrc    # or ~/.bashrc for bash users
+
+# Use askx for commands with history support
+askx "list all files"
+askx "kill process on port 3000"
+askx "find large files over 100MB"
+```
+
+**askx Benefits:**
+- ✅ Commands are added to your shell history
+- ✅ Use arrow keys to find previously executed commands
+- ✅ Streamlined confirmation: just press Enter to execute
+- ✅ Color-coded command display for better readability
+
+**Example askx workflow:**
+```bash
+$ askx "delete files older than 30 days"
+
+Execute this command? (Enter/n): find . -type f -mtime +30 -delete 
+[Press Enter]
+✅ Command executed successfully and added to history
+```
+
+**Uninstall askx:**
+```bash
+ask uninstall      # Remove askx function
+source ~/.zshrc    # Reload shell
+```
+
 ### Basic Commands
 ```bash
-# Generate and execute commands
+# Traditional interactive mode
 ask list all files
 ask find large files over 100MB
 ask kill process on port 3000
@@ -92,6 +137,7 @@ ask config                 # View configuration
 # Advanced options
 ask --debug complex query       # Debug mode
 ask --explain rm -rf folder     # Get explanations
+ask --print "your query"        # Print command only (used by askx)
 ```
 
 ### Model Management Workflow
@@ -167,6 +213,9 @@ Explanation:
 | Command | Description | Example |
 |---------|-------------|---------|
 | `ask [query]` | Convert natural language to commands | `ask install docker` |
+| `askx [query]` | Execute with shell history support | `askx "list all files"` |
+| `ask install` | Install askx helper function | `ask install` |
+| `ask uninstall` | Remove askx helper function | `ask uninstall` |
 | `ask ls` | List all model configurations | `ask ls` |
 | `ask use <name>` | Switch to specific model | `ask use "Creative Mode"` |
 | `ask config` | Show configuration file path and content | `ask config` |
@@ -178,6 +227,7 @@ Explanation:
 **Global Options:**
 - `--debug, -d` → Enable debug mode with timing info
 - `--explain, -e` → Get command explanations
+- `--print, -p` → Print command only (used internally by askx)
 
 **Log Options:**
 - `--clear` → Clear command history

@@ -10,11 +10,17 @@ GitHub: [https://github.com/zhump/ask2-ai-cli](https://github.com/zhump/ask2-ai-
 
 ## ✨ 核心特性
 
+### 🎯 Shell集成功能
+- **askx辅助函数**，无缝集成shell历史记录
+- **一键安装**，自动检测shell类型
+- **回车确认执行**，简化的确认流程
+- **彩色命令显示**，更好的可读性
+- **自动清理**和便捷卸载
+
 ### 🎯 多AI模型支持
 - **配置多个AI模型**，支持不同设置（温度参数、API端点）
 - **简单切换模型**，使用简单命令即可
 - **智能模型管理**，带有可视化状态指示器
-
 
 ### 🛡️ 高级安全保护
 - **危险命令检测**，双重确认机制
@@ -74,9 +80,47 @@ ask test
 
 ## 📖 使用方法
 
+### Shell集成（推荐）
+
+为了获得最佳的shell历史记录支持体验，请安装 `askx` 辅助函数：
+
+```bash
+# 安装askx函数到你的shell
+ask install
+
+# 重新加载shell配置
+source ~/.zshrc    # zsh用户，bash用户使用 ~/.bashrc
+
+# 使用askx执行命令，支持历史记录
+askx "列出所有文件"
+askx "杀死3000端口的进程"
+askx "查找大于100MB的大文件"
+```
+
+**askx的优势：**
+- ✅ 命令会添加到shell历史记录中
+- ✅ 可以使用上下箭头键查找之前执行的命令
+- ✅ 简化的确认流程：直接按回车执行
+- ✅ 彩色命令显示，更好的可读性
+
+**askx使用示例：**
+```bash
+$ askx "删除30天前的文件"
+
+Execute this command? (Enter/n): find . -type f -mtime +30 -delete 
+[按回车]
+✅ Command executed successfully and added to history
+```
+
+**卸载askx：**
+```bash
+ask uninstall      # 移除askx函数
+source ~/.zshrc    # 重新加载shell
+```
+
 ### 基本命令
 ```bash
-# 生成并执行命令
+# 传统交互模式
 ask 列出所有文件
 ask 查找大于100MB的大文件
 ask 杀死3000端口的进程
@@ -89,6 +133,7 @@ ask config                 # 查看配置
 # 高级选项
 ask --debug "复杂查询"      # 调试模式
 ask --explain "rm -rf 文件夹" # 获取解释
+ask --print "你的查询"       # 仅打印命令（askx内部使用）
 ```
 
 ### 模型管理工作流
@@ -162,7 +207,10 @@ df -h
 
 | 命令 | 描述 | 示例 |
 |------|------|------|
-| `ask [查询]` | 将自然语言转换为命令，无需双引号 | `ask 安装docker` |
+| `ask [查询]` | 将自然语言转换为命令 | `ask 安装docker` |
+| `askx [查询]` | 执行命令并支持shell历史记录 | `askx "列出所有文件"` |
+| `ask install` | 安装askx辅助函数 | `ask install` |
+| `ask uninstall` | 移除askx辅助函数 | `ask uninstall` |
 | `ask ls` | 列出所有模型配置 | `ask ls` |
 | `ask use <名称>` | 切换到指定模型 | `ask use "创意模式"` |
 | `ask config` | 显示配置文件路径和内容 | `ask config` |
@@ -174,6 +222,7 @@ df -h
 **全局选项:**
 - `--debug, -d` → 启用带时间信息的调试模式
 - `--explain, -e` → 获取命令解释
+- `--print, -p` → 仅打印命令（askx内部使用）
 
 **日志选项:**
 - `--clear` → 清除命令历史

@@ -11,6 +11,7 @@ import aiService from '../services/ai.js';
 
 export interface AskOptions extends DebugOptions {
   explain?: boolean;
+  print?: boolean;
 }
 
 export async function askCommand(query: string, options: AskOptions = {}): Promise<void> {
@@ -48,6 +49,12 @@ export async function askCommand(query: string, options: AskOptions = {}): Promi
 
       debugTimer.showResponse(currentCommand);
       spinner.stop();
+
+      // If print mode, just output the command and exit
+      if (options.print) {
+        console.log(currentCommand);
+        return;
+      }
 
       // Show suggested command
       debugTimer.startStage('Display result');

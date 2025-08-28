@@ -6,12 +6,31 @@ export function executeCommand(command: string): Promise<void> {
     console.log(chalk.blue('\nExecuting command:'), chalk.cyan(command));
     console.log(chalk.gray('─'.repeat(50)));
     
-    // 根据系统选择合适的 shell
+    // 根据系统选择合适的 shell，优先使用用户当前的 shell
     const isWindows = process.platform === 'win32';
-    const shell = isWindows ? 'cmd' : 'sh';
-    const shellFlag = isWindows ? '/c' : '-c';
+    let shell: string;
+    let shellArgs: string[];
     
-    const child = spawn(shell, [shellFlag, command], {
+    if (isWindows) {
+      shell = 'cmd';
+      shellArgs = ['/c', command];
+    } else {
+      // 使用用户当前的 shell，并强制加载配置文件
+      shell = process.env.SHELL || '/bin/sh';
+      
+      if (shell.includes('zsh')) {
+        // 对于 zsh，加载 .zshrc 然后执行命令
+        shellArgs = ['-c', `source ~/.zshrc 2>/dev/null; ${command}`];
+      } else if (shell.includes('bash')) {
+        // 对于 bash，加载 .bashrc 然后执行命令
+        shellArgs = ['-c', `source ~/.bashrc 2>/dev/null; ${command}`];
+      } else {
+        // 其他 shell，直接执行
+        shellArgs = ['-c', command];
+      }
+    }
+    
+    const child = spawn(shell, shellArgs, {
       stdio: 'inherit',
       cwd: process.cwd()
     });

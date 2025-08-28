@@ -4,6 +4,8 @@ import { program } from 'commander';
 import fs from 'fs';
 import { askCommand } from '../commands/ask.js';
 import { configCommand } from '../commands/config.js';
+import { installCommand } from '../commands/install.js';
+import { uninstallCommand } from '../commands/uninstall.js';
 import { testCommand } from '../commands/test.js';
 import { logCommand } from '../commands/log.js';
 import { useCommand } from '../commands/use.js';
@@ -29,6 +31,7 @@ program
   .argument('[query...]', 'Natural language query to convert to command')
   .option('-d, --debug', 'Enable debug mode with detailed timing and prompt info')
   .option('-e, --explain', 'Provide detailed explanation of the generated command')
+  .option('-p, --print', 'Only print the command without execution prompt (for use with askx)')
   .action(async (query: string[], options) => {
     if (query.length === 0) {
       program.help();
@@ -36,7 +39,8 @@ program
     }
     await askCommand(query.join(' '), { 
       debug: options.debug, 
-      explain: options.explain 
+      explain: options.explain,
+      print: options.print
     });
   });
 
@@ -44,6 +48,16 @@ program
   .command('config')
   .description('Open configuration file to set API key and preferences')
   .action(configCommand);
+
+program
+  .command('install')
+  .description('Install askx helper function to your shell RC file')
+  .action(installCommand);
+
+program
+  .command('uninstall')
+  .description('Remove askx helper function from your shell RC file')
+  .action(uninstallCommand);
 
 program
   .command('test [modelName]')
